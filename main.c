@@ -20,6 +20,8 @@
 #define launch_wped_w (XVAR (unsigned short, 0x2D002))
 #define launch_nmot_w (XVAR (unsigned short, 0x2D004))
 #define launch_vfzg_w (XVAR (unsigned short, 0x2D006))
+#define launch_start_nmot_w (XVAR (unsigned short, 0x2D008))
+#define launch_lamsons_w (XVAR (unsigned short, 0x2D00A))
 
 void huge launch()
 {
@@ -38,6 +40,7 @@ launch_disaled:
 void huge kr_overload()
 {
 	__asm {
+		extp #0C1h, #1
 		movb    rl4, 0x192E
 		jmpr cc_Z, launch_disabled
 		bclr 0FD42H.2
@@ -51,14 +54,10 @@ void huge redsol_select()
 	__asm {
 		calls 5, 0x053A
 	}
-	if(wped_w > launch_wped_w && vfzg_w <= launch_vfzg_w) {
+	if(wped_w > launch_wped_w && vfzg_w <= launch_vfzg_w && nmot_w >= launch_start_nmot_w) {
 		launch_active = 1;
 		if(nmot_w > launch_nmot_w + 1200)
 			redsol_my = 5;
-		if(nmot_w > launch_nmot_w + 800)
-			redsol_my = 4;
-		else if(nmot_w > launch_nmot_w + 400)
-			redsol_my = 3;
 		else if(nmot_w > launch_nmot_w)
 			redsol_my = 2;
 		else if(nmot_w > launch_nmot_w - 400)
@@ -72,4 +71,18 @@ void huge redsol_select()
 	}
 	if(redsol_my > 0)
 		redsol = redsol_my;
+}
+
+void huge lamsons_select()
+{
+	__asm {
+		extp #0C1h, #1
+		movb    rl3, 0x192E
+		jmpr cc_Z, launch_disabled
+		extp #0Bh, #1
+		mov r4, 0x100A
+		mov 0xA93C, r4
+launch_disabled:
+		mov 0xA93E, r4
+	}
 }
