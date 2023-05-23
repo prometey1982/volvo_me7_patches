@@ -14,7 +14,7 @@
 #define word_FD64 (XVAR (unsigned short, 0xFD64))
 #define redsol (XVAR (unsigned char, 0x3013F4))
 #define redsol_my (XVAR (unsigned char, 0x30592C))
-#define launch_active (XVAR (unsigned char, 0x30592E))
+#define launch_status (XVAR (unsigned char, 0xFDE2))
 #define byte_301336 (XVAR (unsigned char, 0x30136))
 #define launch_zwgru (XVAR (signed char, 0x2D000))
 #define launch_wped_w (XVAR (unsigned short, 0x2D002))
@@ -26,13 +26,11 @@
 void huge launch()
 {
 	__asm {
-		extp #0C1h, #1
-		movb    rl4, 0x192E
-		jmpr cc_Z, launch_disaled
+		jnb 0xFDE2.0, launch_disabled
 		extp #0Bh, #1
 		movb    rl4, 0x1000
 		movb [r9], rl4
-launch_disaled:
+launch_disabled:
 		movb 0xF33A, [r9]
 	}
 }
@@ -40,9 +38,7 @@ launch_disaled:
 void huge kr_overload()
 {
 	__asm {
-		extp #0C1h, #1
-		movb    rl4, 0x192E
-		jmpr cc_Z, launch_disabled
+		jnb 0xFDE2.0, launch_disabled
 		bclr 0FD42H.2
 launch_disabled:
 		calls 7, 0xB41A
@@ -55,7 +51,7 @@ void huge redsol_select()
 		calls 5, 0x053A
 	}
 	if(wped_w > launch_wped_w && vfzg_w <= launch_vfzg_w && nmot_w >= launch_start_nmot_w) {
-		launch_active = 1;
+		launch_status |= 1;
 		if(nmot_w > launch_nmot_w + 1200)
 			redsol_my = 5;
 		else if(nmot_w > launch_nmot_w)
@@ -66,7 +62,7 @@ void huge redsol_select()
 			redsol_my = 0;
 	}
 	else {
-		launch_active = 0;
+		launch_status = 0;
 		redsol_my = 0;
 	}
 	if(redsol_my > 0)
@@ -76,9 +72,7 @@ void huge redsol_select()
 void huge lamsons_select()
 {
 	__asm {
-		extp #0C1h, #1
-		movb    rl3, 0x192E
-		jmpr cc_Z, launch_disabled
+		jnb 0xFDE2.0, launch_disabled
 		extp #0Bh, #1
 		mov r4, 0x100A
 		mov 0xA93C, r4
