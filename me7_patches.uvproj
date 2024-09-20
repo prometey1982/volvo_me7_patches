@@ -225,7 +225,7 @@
             <Optimize>8</Optimize>
             <SpeedSize>1</SpeedSize>
             <RegisterColoring>0</RegisterColoring>
-            <UseStaticMemory>0</UseStaticMemory>
+            <UseStaticMemory>1</UseStaticMemory>
             <WarningLevel>2</WarningLevel>
             <AliasChecking>1</AliasChecking>
             <VariablesInOrder>0</VariablesInOrder>

@@ -14,6 +14,7 @@
 #define word_FD26 (XVAR (unsigned short, 0xFD26))
 #define word_FD64 (XVAR (unsigned short, 0xFD64))
 #define redsol (XVAR (unsigned char, 0x3013F4))
+#define checkvin_res (XVAR (unsigned char, 0x3013F5))
 #define redsol_my (XVAR (unsigned char, 0x30592C))
 #define kfnwse_offset (XVAR (unsigned short, 0x303F7E))
 #define kfnwse_page (XVAR (unsigned short, 0x303F80))
@@ -131,14 +132,14 @@ void check_vin_impl()
 	int i = 0;
 	for(i = 0; i < 17; ++i)
 		result += (&vin_begin)[i];
-	
+	checkvin_res = (result == vin_expected);
 	vin_accepted = (result == vin_expected);
 }
 
 void huge check_vin()
 {
 	__asm {
-		movb    0xB19A, rl4
+		orb     0xB18F, rl2
 	}
 	check_vin_impl();
 }
